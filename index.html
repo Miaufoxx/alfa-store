@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10152b">
+<title>ALFA STORE — Belanja Modern</title>
+<style>
+:root{
+  --bg:#0c1022;--panel:rgba(255,255,255,.085);--panel2:rgba(255,255,255,.12);
+  --line:rgba(255,255,255,.15);--text:#f7f8ff;--muted:#aeb5d0;
+  --primary:#8b7cff;--cyan:#5ce1e6;--pink:#e9a2ff;--danger:#ff7790;
+  --shadow:0 24px 70px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 10% 0%,#29275b 0,transparent 35%),radial-gradient(ellipse at 100% 25%,#123d58 0,transparent 30%),linear-gradient(145deg,#0a0e1d,#15152f 55%,#0a1828);background-attachment:fixed}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.ambient{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
+.orb{position:absolute;width:260px;height:260px;border-radius:50%;filter:blur(80px);opacity:.23;animation:float 12s ease-in-out infinite alternate}
+.orb.one{background:#8a61ff;left:-80px;top:25%}.orb.two{background:#23d4dc;right:-90px;top:55%;animation-delay:-5s}
+@keyframes float{to{transform:translate(50px,-45px) scale(1.15)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:.55;transform:scale(.96)}}
+.glass{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+#loader{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#0c1022;transition:opacity .5s,visibility .5s}
+#loader.hide{opacity:0;visibility:hidden}
+.loader-inner{text-align:center}.loader-logo{width:76px;height:76px;border-radius:25px;display:grid;place-items:center;margin:0 auto 18px;background:linear-gradient(135deg,var(--primary),var(--cyan));color:#0c1022;font-size:27px;font-weight:900;box-shadow:0 0 45px #8b7cff55;animation:pulse 1.2s infinite}
+.spinner{width:25px;height:25px;border:3px solid #ffffff20;border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite;margin:18px auto}
+.loader-caption{color:var(--muted);font-size:13px}
+.wrap{width:min(1180px,calc(100% - 32px));margin:auto}
+header{position:sticky;top:10px;z-index:30;margin:10px auto 28px;border-radius:20px}
+.nav{display:flex;align-items:center;gap:18px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:900;letter-spacing:.7px;white-space:nowrap}
+.brand-mark{width:39px;height:39px;border-radius:13px;background:linear-gradient(135deg,var(--primary),var(--cyan));display:grid;place-items:center;color:#0b1021;font-weight:1000;box-shadow:0 8px 25px #8b7cff40}
+.brand small{display:block;font-size:10px;letter-spacing:2.5px;color:var(--muted);font-weight:700;margin-top:1px}
+.navlinks{display:flex;align-items:center;gap:7px;margin-left:auto}
+.navlinks a{color:var(--muted);text-decoration:none;padding:10px 12px;border-radius:12px;font-size:13px;transition:.2s}
+.navlinks a:hover{background:#ffffff10;color:white}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);color:var(--text);background:rgba(255,255,255,.08);border-radius:13px;padding:11px 15px;font-weight:750;font-size:13px;transition:transform .2s,background .2s,border .2s}
+.btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.14)}
+.btn.primary{background:linear-gradient(120deg,#a99cff,#69e6e9);color:#10132b;border:0;box-shadow:0 9px 25px #8b7cff28}
+.btn.danger{color:#ffdbe2;border-color:#ff779055}
+.cart-btn{position:relative}
+.count{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;background:#e9a2ff;color:#15102a;border-radius:30px;font-size:10px;font-weight:900;margin-left:5px}
+.menu-toggle{display:none}
+.hero{display:grid;grid-template-columns:1.08fr .92fr;gap:28px;align-items:center;padding:35px 0 56px;animation:fadeUp .7s both}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #ffffff20;background:#ffffff08;border-radius:40px;padding:8px 12px;color:#d9d4ff;font-size:12px;font-weight:750}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+h1{font-size:clamp(38px,6vw,68px);line-height:1.02;letter-spacing:-2.6px;margin:22px 0 18px;max-width:700px}
+.gradient-text{background:linear-gradient(100deg,#c9c0ff,#6be9eb 75%);color:transparent;background-clip:text;-webkit-background-clip:text}
+.hero p{color:var(--muted);font-size:16px;line-height:1.8;max-width:530px;margin:0}
+.hero-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.trust-row{display:flex;gap:20px;flex-wrap:wrap;margin-top:27px;color:var(--muted);font-size:12px}
+.trust-row span{display:flex;align-items:center;gap:7px}
+.hero-art{min-height:365px;position:relative;display:grid;place-items:center}
+.art-card{width:min(100%,410px);aspect-ratio:1/1.02;border-radius:32px;padding:24px;position:relative;overflow:hidden;transform:rotate(2deg);background:linear-gradient(145deg,#ffffff18,#ffffff04);border:1px solid #ffffff2a;box-shadow:0 30px 80px #0005;animation:float 7s ease-in-out infinite alternate}
+.art-glow{position:absolute;width:250px;height:250px;border-radius:50%;background:linear-gradient(135deg,#8b7cff,#5ce1e6);filter:blur(2px);opacity:.6;right:-30px;top:10px}
+.art-ring{position:absolute;border:1px solid #ffffff48;border-radius:50%;width:280px;height:280px;right:-40px;top:35px}
+.art-product{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(100px,17vw,175px);filter:drop-shadow(0 25px 22px #0005);transform:rotate(-9deg)}
+.art-label{position:absolute;left:22px;bottom:22px;right:22px;padding:16px 18px;border-radius:19px;background:#10152bc9;border:1px solid #ffffff22;backdrop-filter:blur(15px)}
+.art-label small{color:var(--cyan);font-size:10px;font-weight:900;letter-spacing:1.5px}
+.art-label strong{display:block;font-size:18px;margin-top:5px}
+.float-chip{position:absolute;z-index:2;padding:12px 15px;border-radius:16px;font-size:12px;font-weight:800;animation:float 5s infinite alternate}
+.chip-one{top:45px;left:-10px}.chip-two{right:-10px;bottom:42px;animation-delay:-2s}
+.section{padding:28px 0 50px;scroll-margin-top:100px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}
+.kicker{color:var(--cyan);font-size:11px;letter-spacing:2px;font-weight:900;text-transform:uppercase}
+h2{font-size:clamp(25px,4vw,36px);letter-spacing:-1px;margin:7px 0 0}
+.subtext{color:var(--muted);font-size:13px;line-height:1.6;margin-top:8px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.searchbox{flex:1;min-width:190px;position:relative}
+.searchbox input{width:100%;padding:13px 15px 13px 42px;border:1px solid var(--line);border-radius:14px;background:#ffffff09;color:white;outline:none}
+.searchbox input::placeholder{color:#929bb9}
+.search-icon{position:absolute;left:15px;top:12px;color:var(--muted)}
+select{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#171b35;color:white;min-width:145px}
+.category-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.category{border:1px solid var(--line);background:#ffffff08;color:var(--muted);padding:9px 14px;border-radius:30px;font-size:12px;font-weight:750}
+.category.active,.category:hover{background:#9c8dff24;color:white;border-color:#a99cff80}
+.products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.product{border-radius:22px;overflow:hidden;transition:transform .25s,border-color .25s;animation:fadeUp .45s both}
+.product:hover{transform:translateY(-6px);border-color:#a99cff75}
+.product-visual{height:165px;display:grid;place-items:center;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 35%,#ffffff20,transparent 60%),linear-gradient(145deg,#ffffff0b,#ffffff03);font-size:66px}
+.product-visual:after{content:"";position:absolute;width:110px;height:110px;border:1px solid #ffffff12;border-radius:50%}
+.product-tag{position:absolute;top:12px;left:12px;z-index:1;background:#8b7cff30;color:#e3deff;border:1px solid #b2a6ff44;border-radius:20px;padding:5px 8px;font-size:10px;font-weight:800}
+.product-body{padding:15px}
+.product-category{color:var(--cyan);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.product-name{font-size:15px;font-weight:800;margin:7px 0;min-height:38px}
+.product-desc{color:var(--muted);font-size:11px;line-height:1.6;min-height:35px}
+.product-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.price{font-size:15px;font-weight:900}
+.add-btn{width:37px;height:37px;border-radius:12px;border:0;background:linear-gradient(135deg,#a99cff,#67e5e8);color:#11142a;font-size:22px;font-weight:700}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:45px 15px;border:1px dashed var(--line);border-radius:18px}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feature{padding:22px;border-radius:20px}
+.feature-icon{font-size:25px}.feature h3{font-size:15px;margin:13px 0 7px}.feature p{font-size:12px;color:var(--muted);line-height:1.7;margin:0}
+.newsletter{padding:28px;border-radius:24px;display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap}
+.newsletter h2{font-size:25px}.newsletter p{color:var(--muted);font-size:13px;margin-bottom:0}
+footer{border-top:1px solid #ffffff13;margin-top:24px;padding:25px 0 35px;color:var(--muted);font-size:12px}
+.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.footer-links{display:flex;gap:15px}.footer-links a{color:var(--muted);text-decoration:none}
+.modal-backdrop{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:16px;background:#050713bb;backdrop-filter:blur(12px)}
+.modal-backdrop.show{display:grid;animation:fadeUp .2s both}
+.modal{width:min(100%,440px);padding:24px;border-radius:25px;max-height:90vh;overflow:auto;position:relative}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.modal-head h2{font-size:23px;margin:0}
+.close{width:35px;height:35px;border:1px solid var(--line);border-radius:11px;background:#ffffff0b;color:white;font-size:20px}
+.field{margin:13px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+.field input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:#ffffff08;color:white;outline:none}
+.field input:focus{border-color:#a99cff}
+.full{width:100%;margin-top:9px}
+.switch-auth{text-align:center;color:var(--muted);font-size:12px;margin-top:17px}.link-btn{border:0;background:none;color:var(--cyan);font-weight:800}
+.notice{padding:11px 13px;border:1px solid #5ce1e655;background:#5ce1e60c;border-radius:12px;color:#c9ffff;font-size:12px;line-height:1.6;margin:12px 0}
+.error{color:#ffb2c0;font-size:12px;margin-top:8px}
+.cart-list{display:grid;gap:10px}
+.cart-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:15px;background:#ffffff06}
+.cart-emoji{font-size:29px;width:48px;height:48px;display:grid;place-items:center;background:#ffffff09;border-radius:13px}
+.cart-info{flex:1;min-width:0}.cart-info strong{font-size:13px;display:block}.cart-info small{font-size:11px;color:var(--muted)}
+.qty{display:flex;align-items:center;gap:8px}.qty button{width:25px;height:25px;border:1px solid var(--line);border-radius:8px;background:#ffffff0a;color:white}
+.cart-summary{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}
+.total-row{display:flex;justify-content:space-between;font-weight:900;font-size:17px;margin:12px 0}
+.profile-pill{font-size:11px;color:var(--cyan);padding:8px 10px;border-radius:11px;background:#5ce1e610;border:1px solid #5ce1e633}
+.toast{position:fixed;z-index:200;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#f3f1ff;color:#17132c;padding:12px 17px;border-radius:13px;box-shadow:var(--shadow);font-size:13px;font-weight:800;transition:.25s;max-width:calc(100% - 30px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.products{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{gap:15px}.navlinks a{padding:9px 7px}}
+@media(max-width:700px){
+ .wrap{width:min(100% - 24px,550px)}header{top:6px;margin:6px auto 12px}.nav{padding:10px;gap:10px}.brand-mark{width:36px;height:36px}.brand{font-size:14px}.navlinks{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;padding:10px;border-radius:17px;background:#151a33f5;border:1px solid var(--line);box-shadow:var(--shadow);flex-direction:column;align-items:stretch}.navlinks.open{display:flex}.navlinks a{padding:12px}.nav-actions{margin-left:auto}.nav-actions .login-label{display:none}.nav-actions .btn{padding:10px 11px}.menu-toggle{display:block;padding:9px 11px}
+ .hero{grid-template-columns:1fr;padding:28px 0 36px}.hero h1{letter-spacing:-1.7px}.hero p{font-size:14px}.hero-art{min-height:300px;margin:0 8px}.art-card{max-width:330px}.float-chip.chip-one{left:0}.float-chip.chip-two{right:0}
+ .section{padding:22px 0 34px}.section-head{align-items:start;flex-direction:column;gap:10px}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.product-visual{height:130px;font-size:54px}.product-body{padding:12px}.product-name{font-size:13px;min-height:34px}.product-desc{font-size:10px}.price{font-size:13px}.add-btn{width:34px;height:34px}.features{grid-template-columns:1fr}.feature{padding:18px}.newsletter{padding:22px}.newsletter h2{font-size:22px}
+}
+@media(max-width:360px){.brand small{letter-spacing:1.5px}.products{gap:8px}.product-visual{height:110px}.product-body{padding:10px}.product-name{font-size:12px}.hero-buttons .btn{flex:1}.cart-btn{font-size:0}.cart-btn .count{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="ambient"><div class="orb one"></div><div class="orb two"></div></div>
+<div id="loader"><div class="loader-inner"><div class="loader-logo">A</div><strong style="letter-spacing:2px">ALFA STORE</strong><div class="spinner"></div><div class="loader-caption">Menyiapkan pengalaman belanja...</div></div></div>
+
+<div class="wrap">
+<header class="glass">
+  <nav class="nav">
+    <a class="brand" href="#beranda"><span class="brand-mark">A</span><span>ALFA STORE<small>YOUR DAILY FINDS</small></span></a>
+    <div class="navlinks" id="navlinks">
+      <a href="#beranda" data-close-menu>Beranda</a><a href="#produk" data-close-menu>Produk</a><a href="#keunggulan" data-close-menu>Keunggulan</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn cart-btn" id="openCart" aria-label="Buka keranjang">🛒 <span class="login-label">Keranjang</span><span class="count" id="cartCount">0</span></button>
+      <button class="btn primary" id="authNav">Masuk</button>
+      <button class="btn menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero" id="beranda">
+  <div>
+    <div class="eyebrow"><span class="dot"></span> TEMPAT TEMUAN FAVORITMU</div>
+    <h1>Belanja lebih <span class="gradient-text">seru.</span><br>Gaya lebih kamu.</h1>
+    <p>Temukan pilihan produk favorit dengan pengalaman belanja modern, simpel, dan nyaman. Semua yang kamu cari, mulai dari sini.</p>
+    <div class="hero-buttons"><a class="btn primary" href="#produk" style="text-decoration:none">Jelajahi produk ↗</a><button class="btn" id="heroLogin">Buat akun gratis</button></div>
+    <div class="trust-row"><span>✦ Produk pilihan</span><span>◈ Tampilan modern</span><span>✓ Mudah digunakan</span></div>
+  </div>
+  <div class="hero-art">
+    <div class="float-chip chip-one glass">✦ Pilihan favorit</div>
+    <div class="art-card"><div class="art-glow"></div><div class="art-ring"></div><div class="art-product">🎧</div><div class="art-label"><small>ALFA PICKS / 001</small><strong>Upgrade gaya harianmu.</strong></div></div>
+    <div class="float-chip chip-two glass">✧ Temukan favoritmu</div>
+  </div>
+</section>
+
+<section class="section" id="produk">
+  <div class="section-head"><div><div class="kicker">KATALOG PILIHAN</div><h2>Produk untuk kamu</h2><div class="subtext">Pilih produk, masukkan ke keranjang, lalu lihat ringkasan pesananmu.</div></div><span class="profile-pill" id="welcomePill">SELAMAT DATANG</span></div>
+  <div class="toolbar">
+    <div class="searchbox"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="Cari produk favorit..." aria-label="Cari produk"></div>
+    <select id="sortSelect" aria-label="Urutkan produk"><option value="featured">Urutan pilihan</option><option value="low">Harga terendah</option><option value="high">Harga tertinggi</option><option value="name">Nama A–Z</option></select>
+  </div>
+  <div class="category-row" id="categoryRow">
+    <button class="category active" data-category="Semua">Semua</button><button class="category" data-category="Aksesori">Aksesori</button><button class="category" data-category="Elektronik">Elektronik</button><button class="category" data-category="Gaya Hidup">Gaya hidup</button><button class="category" data-category="Fashion">Fashion</button>
+  </div>
+  <div class="products" id="productsGrid"></div>
+</section>
+
+<section class="section" id="keunggulan">
+  <div class="section-head"><div><div class="kicker">KENAPA ALFA STORE?</div><h2>Belanja tanpa ribet.</h2><div class="subtext">Dirancang agar pengalaman belanja terasa lebih praktis.</div></div></div>
+  <div class="features">
+    <article class="feature glass"><div class="feature-icon">⚡</div><h3>Praktis dan cepat</h3><p>Temukan produk lewat pencarian dan kategori, lalu tambahkan ke keranjang dengan satu sentuhan.</p></article>
+    <article class="feature glass"><div class="feature-icon">◈</div><h3>Tampilan modern</h3><p>Desain glassmorphism dengan tata letak yang menyesuaikan layar HP maupun komputer.</p></article>
+    <article class="feature glass"><div class="feature-icon">🔐</div><h3>Data di perangkat</h3><p>Keranjang dan akun demo tersimpan di browser perangkat ini. Gunakan hanya untuk demonstrasi.</p></article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="newsletter glass"><div><div class="kicker">MULAI SEKARANG</div><h2>Temukan produk favoritmu.</h2><p>Jelajahi katalog ALFA STORE dan susun keranjang belanjamu.</p></div><a class="btn primary" href="#produk" style="text-decoration:none">Lihat katalog ↗</a></div>
+</section>
+</main>
+<footer><div class="footer-inner"><div><strong style="color:white">ALFA STORE</strong><div style="margin-top:7px">Belanja modern, lebih dekat denganmu.</div></div><div class="footer-links"><a href="#beranda">Beranda</a><a href="#produk">Produk</a><a href="#keunggulan">Tentang</a></div><div>© <span id="year"></span> ALFA STORE</div></div><p style="line-height:1.7;margin-top:18px">Catatan demo: produk dan harga adalah contoh. Website ini belum memproses pembayaran sungguhan dan belum memakai server untuk autentikasi.</p></footer>
+</div>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal glass">
+    <div class="modal-head"><h2 id="authTitle">Selamat datang</h2><button class="close" data-close="authModal" aria-label="Tutup">×</button></div>
+    <div class="notice">Mode demo: akun disimpan hanya di browser ini. Jangan gunakan kata sandi asli atau informasi sensitif.</div>
+    <form id="authForm">
+      <div class="field" id="nameField" hidden><label for="authName">Nama kamu</label><input id="authName" autocomplete="name" maxlength="40" placeholder="Contoh: Alfa"></div>
+      <div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required maxlength="120" placeholder="nama@email.com"></div>
+      <div class="field"><label for="authPassword">Kata sandi demo</label><input id="authPassword" type="password" autocomplete="current-password" required minlength="6" maxlength="80" placeholder="Minimal 6 karakter"></div>
+      <div class="error" id="authError" role="alert"></div>
+      <button class="btn primary full" id="authSubmit" type="submit">Masuk ke akun</button>
+    </form>
+    <div class="switch-auth"><span id="switchText">Belum punya akun?</span> <button class="link-btn" id="switchAuth" type="button">Daftar sekarang</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+  <div class="modal glass">
+    <div class="modal-head"><h2 id="cartTitle">Keranjang kamu</h2><button class="close" data-close="cartModal" aria-label="Tutup">×</button></div>
+    <div id="cartContents"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* ============================
+   ALFA STORE — PENGATURAN TOKO
+   Edit daftar produk di bagian ini.
+   ============================ */
+const DEFAULT_PRODUCTS = [
+  {id:"p1",name:"Headphone Nova",category:"Elektronik",price:185000,emoji:"🎧",tag:"POPULER",desc:"Audio nyaman untuk menemani aktivitas."},
+  {id:"p2",name:"Jam Minimalis",category:"Aksesori",price:129000,emoji:"⌚",tag:"FAVORIT",desc:"Tampilan simpel untuk gaya sehari-hari."},
+  {id:"p3",name:"Tas Urban",category:"Fashion",price:159000,emoji:"🎒",tag:"PILIHAN",desc:"Teman praktis untuk kegiatan harian."},
+  {id:"p4",name:"Lampu Ambient",category:"Elektronik",price:89000,emoji:"💡",tag:"BARU",desc:"Buat suasana ruangan lebih nyaman."},
+  {id:"p5",name:"Kacamata Neo",category:"Aksesori",price:75000,emoji:"🕶️",tag:"TRENDING",desc:"Sentuhan modern untuk penampilanmu."},
+  {id:"p6",name:"Sneakers Cloud",category:"Fashion",price:245000,emoji:"👟",tag:"TERLARIS",desc:"Gaya kasual untuk berbagai aktivitas."},
+  {id:"p7",name:"Tumbler Frost",category:"Gaya Hidup",price:65000,emoji:"🥤",tag:"PRAKTIS",desc:"Bawa minuman favorit saat bepergian."},
+  {id:"p8",name:"Mini Speaker",category:"Elektronik",price:115000,emoji:"🔊",tag:"PILIHAN",desc:"Musik menemani waktu santaimu."}
+];
+const KEYS = {products:"alfa_store_products_v1",cart:"alfa_store_cart_v1",users:"alfa_store_demo_users_v1",session:"alfa_store_demo_session_v1"};
+
+function readStorage(key,fallback){
+  try{const raw=localStorage.getItem(key);return raw===null?fallback:JSON.parse(raw)}
+  catch(e){return fallback}
+}
+function saveStorage(key,value){
+  try{localStorage.setItem(key,JSON.stringify(value));return true}
+  catch(e){showToast("Penyimpanan browser tidak tersedia.");return false}
+}
+function safeText(value){return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+function rupiah(value){return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(value)}
+let products=readStorage(KEYS.products,null);
+if(!Array.isArray(products)||!products.length){products=DEFAULT_PRODUCTS;saveStorage(KEYS.products,products)}
+let cart=readStorage(KEYS.cart,{});
+if(!cart||typeof cart!=="object"||Array.isArray(cart))cart={};
+let users=readStorage(KEYS.users,[]);
+if(!Array.isArray(users))users=[];
+let session=readStorage(KEYS.session,null);
+let currentCategory="Semua",authMode="login",toastTimer=null;
+
+const $=id=>document.getElementById(id);
+function showToast(message){
+  const toast=$("toast");toast.textContent=message;toast.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove("show"),2400);
+}
+function openModal(id){$(id).classList.add("show");document.body.style.overflow="hidden"}
+function closeModal(id){$(id).classList.remove("show");if(!$("authModal").classList.contains("show")&&!$("cartModal").classList.contains("show"))document.body.style.overflow=""}
+function getProduct(id){return products.find(p=>p.id===id)}
+function validPrice(price){return Number.isFinite(Number(price))&&Number(price)>=0}
+function renderProducts(){
+  const query=$("searchInput").value.trim().toLowerCase();
+  let shown=products.filter(p=>(currentCategory==="Semua"||p.category===currentCategory)&&
+    (String(p.name).toLowerCase().includes(query)||String(p.category).toLowerCase().includes(query)||String(p.desc).toLowerCase().includes(query)));
+  const sort=$("sortSelect").value;
+  if(sort==="low")shown.sort((a,b)=>a.price-b.price);
+  if(sort==="high")shown.sort((a,b)=>b.price-a.price);
+  if(sort==="name")shown.sort((a,b)=>a.name.localeCompare(b.name,"id"));
+  const grid=$("productsGrid");
+  if(!shown.length){grid.innerHTML='<div class="empty">Produk tidak ditemukan. Coba kata kunci lain.</div>';return}
+  grid.innerHTML=shown.map((p,i)=>`
+    <article class="product glass" style="animation-delay:${Math.min(i,8)*45}ms">
+      <div class="product-visual"><span class="product-tag">${safeText(p.tag||"PILIHAN")}</span><span aria-hidden="true">${safeText(p.emoji||"📦")}</span></div>
+      <div class="product-body"><div class="product-category">${safeText(p.category)}</div><div class="product-name">${safeText(p.name)}</div>
+      <div class="product-desc">${safeText(p.desc||"Produk pilihan ALFA STORE.")}</div>
+      <div class="product-bottom"><span class="price">${rupiah(Number(p.price)||0)}</span><button class="add-btn" data-add="${safeText(p.id)}" aria-label="Tambah ${safeText(p.name)} ke keranjang">+</button></div></div>
+    </article>`).join("");
+}
+function cartEntries(){
+  return Object.entries(cart).map(([id,qty])=>({product:getProduct(id),qty:Number(qty)})).filter(x=>x.product&&Number.isInteger(x.qty)&&x.qty>0);
+}
+function saveCart(){saveStorage(KEYS.cart,cart);updateCartCount()}
+function updateCartCount(){
+  const count=cartEntries().reduce((sum,x)=>sum+x.qty,0);
+  $("cartCount").textContent=count>99?"99+":String(count);
+}
+function addToCart(id){
+  const p=getProduct(id);if(!p)return;
+  cart[id]=(Number(cart[id])||0)+1;saveCart();showToast(p.name+" ditambahkan ke keranjang.");
+}
+function changeQty(id,delta){
+  if(!getProduct(id))return;
+  const next=(Number(cart[id])||0)+delta;
+  if(next<=0)delete cart[id];else cart[id]=Math.min(99,next);
+  saveCart();renderCart();
+}
+function renderCart(){
+  const entries=cartEntries();const container=$("cartContents");
+  if(!entries.length){container.innerHTML='<div class="empty">Keranjangmu masih kosong.<br><br><a href="#produk" style="color:#8de9eb" id="emptyShopLink">Jelajahi produk →</a></div>';return}
+  const total=entries.reduce((sum,x)=>sum+x.product.price*x.qty,0);
+  container.innerHTML=`<div class="cart-list">${entries.map(x=>`<div class="cart-item">
+    <div class="cart-emoji">${safeText(x.product.emoji||"📦")}</div><div class="cart-info"><strong>${safeText(x.product.name)}</strong><small>${rupiah(x.product.price)} / item</small></div>
+    <div class="qty"><button data-qty="${safeText(x.product.id)}" data-delta="-1" aria-label="Kurangi">−</button><span>${x.qty}</span><button data-qty="${safeText(x.product.id)}" data-delta="1" aria-label="Tambah">+</button></div>
+    </div>`).join("")}</div>
+    <div class="cart-summary"><div class="total-row"><span>Total</span><span>${rupiah(total)}</span></div>
+    <div class="notice">Ini keranjang demo. Tombol checkout belum memproses pembayaran.</div>
+    <button class="btn primary full" id="checkoutBtn">Lanjutkan pesanan</button><button class="btn full" id="clearCartBtn">Kosongkan keranjang</button></div>`;
+}
+function renderAuthState(){
+  const loggedIn=!!(session&&users.some(u=>u.email===session.email));
+  if(loggedIn){
+    const user=users.find(u=>u.email===session.email);
+    $("authNav").textContent="Keluar";$("welcomePill").textContent="HAI, "+String(user.name||"PENGGUNA").toUpperCase().slice(0,18);
+    $("heroLogin").textContent="Akun saya";
+  }else{
+    session=null;saveStorage(KEYS.session,null);$("authNav").textContent="Masuk";$("welcomePill").textContent="SELAMAT DATANG";$("heroLogin").textContent="Buat akun gratis";
+  }
+}
+function showAuth(mode){
+  authMode=mode;$("authTitle").textContent=mode==="login"?"Selamat datang kembali":"Buat akun ALFA STORE";
+  $("authSubmit").textContent=mode==="login"?"Masuk ke akun":"Buat akun demo";
+  $("nameField").hidden=mode==="login";$("authName").required=mode==="register";
+  $("authPassword").autocomplete=mode==="login"?"current-password":"new-password";
+  $("switchText").textContent=mode==="login"?"Belum punya akun?":"Sudah punya akun?";
+  $("switchAuth").textContent=mode==="login"?"Daftar sekarang":"Masuk";
+  $("authError").textContent="";$("authForm").reset();openModal("authModal");
+}
+function logout(){
+  session=null;saveStorage(KEYS.session,null);renderAuthState();showToast("Kamu sudah keluar."); 
+}
+function handleAuthSubmit(event){
+  event.preventDefault();$("authError").textContent="";
+  const email=$("authEmail").value.trim().toLowerCase(),password=$("authPassword").value;
+  if(!email||password.length<6){$("authError").textContent="Masukkan email valid dan kata sandi minimal 6 karakter.";return}
+  if(authMode==="register"){
+    const name=$("authName").value.trim();
+    if(name.length<2){$("authError").textContent="Nama minimal 2 karakter.";return}
+    if(users.some(u=>u.email===email)){$("authError").textContent="Email ini sudah terdaftar di demo. Silakan masuk.";return}
+    /* DEMO ONLY: password disimpan sebagai teks biasa di localStorage.
+       Jangan gunakan untuk akun nyata. Produksi wajib memakai backend aman. */
+    users.push({name,email,password,createdAt:new Date().toISOString()});saveStorage(KEYS.users,users);
+    session={email};saveStorage(KEYS.session,session);renderAuthState();closeModal("authModal");showToast("Akun demo berhasil dibuat!");
+  }else{
+    const user=users.find(u=>u.email===email&&u.password===password);
+    if(!user){$("authError").textContent="Email atau kata sandi demo tidak cocok.";return}
+    session={email};saveStorage(KEYS.session,session);renderAuthState();closeModal("authModal");showToast("Berhasil masuk. Halo, "+user.name+"!");
+  }
+}
+function checkout(){
+  if(!cartEntries().length){showToast("Keranjang masih kosong.");return}
+  const entries=cartEntries();const total=entries.reduce((sum,x)=>sum+x.product.price*x.qty,0);
+  const lines=entries.map(x=>`${x.product.name} x${x.qty} — ${rupiah(x.product.price*x.qty)}`).join("\n");
+  const message=`RINGKASAN PESANAN ALFA STORE\n\n${lines}\n\nTotal: ${rupiah(total)}\n\nIni ringkasan demo, belum merupakan transaksi atau pembayaran.`;
+  closeModal("cartModal");
+  // Tampilkan ringkasan melalui kotak dialog bawaan, tanpa mengirim data ke mana pun.
+  alert(message);
+}
+$("productsGrid").addEventListener("click",e=>{const btn=e.target.closest("[data-add]");if(btn)addToCart(btn.dataset.add)});
+$("categoryRow").addEventListener("click",e=>{
+  const btn=e.target.closest("[data-category]");if(!btn)return;
+  currentCategory=btn.dataset.category;
+  document.querySelectorAll(".category").forEach(b=>b.classList.toggle("active",b===btn));renderProducts();
+});
+$("searchInput").addEventListener("input",renderProducts);$("sortSelect").addEventListener("change",renderProducts);
+$("openCart").addEventListener("click",()=>{renderCart();openModal("cartModal")});
+$("authNav").addEventListener("click",()=>{if(session&&users.some(u=>u.email===session.email))logout();else showAuth("login")});
+$("heroLogin").addEventListener("click",()=>{if(session&&users.some(u=>u.email===session.email)){showToast("Kamu sudah masuk ke akun demo.");}else showAuth("register")});
+$("switchAuth").addEventListener("click",()=>showAuth(authMode==="login"?"register":"login"));
+$("authForm").addEventListener("submit",handleAuthSubmit);
+$("menuToggle").addEventListener("click",()=>$("navlinks").classList.toggle("open"));
+document.querySelectorAll("[data-close]").forEach(btn=>btn.addEventListener("click",()=>closeModal(btn.dataset.close)));
+document.querySelectorAll(".modal-backdrop").forEach(backdrop=>backdrop.addEventListener("click",e=>{if(e.target===backdrop)closeModal(backdrop.id)}));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal("authModal");closeModal("cartModal");$("navlinks").classList.remove("open")}});
+$("cartContents").addEventListener("click",e=>{
+  const qtyBtn=e.target.closest("[data-qty]");
+  if(qtyBtn){changeQty(qtyBtn.dataset.qty,Number(qtyBtn.dataset.delta));return}
+  if(e.target.id==="checkoutBtn"){checkout();return}
+  if(e.target.id==="clearCartBtn"){cart={};saveCart();renderCart();showToast("Keranjang dikosongkan.");return}
+  if(e.target.id==="emptyShopLink"){closeModal("cartModal")}
+});
+document.querySelectorAll("[data-close-menu]").forEach(a=>a.addEventListener("click",()=>$("navlinks").classList.remove("open")));
+$("year").textContent=new Date().getFullYear();
+renderProducts();updateCartCount();renderAuthState();
+// Loading screen tetap singkat dan memberi waktu untuk menampilkan antarmuka.
+window.addEventListener("load",()=>setTimeout(()=>$("loader").classList.add("hide"),650));
+setTimeout(()=>$("loader").classList.add("hide"),2200);
+</script>
+</body>
+</html>
